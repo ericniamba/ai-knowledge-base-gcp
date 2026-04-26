@@ -62,11 +62,18 @@ resource "google_artifact_registry_repository" "repo" {
 
 # GKE Cluster
 resource "google_container_cluster" "primary" {
-  name     = "${var.project_name}-cluster"
-  location = var.region
+  name                = "${var.project_name}-cluster"
+  location            = var.region
+  deletion_protection = false
 
   remove_default_node_pool = true
   initial_node_count       = 1
+
+  node_config {
+    machine_type = "e2-medium"
+    disk_size_gb = 30
+    disk_type    = "pd-standard"
+  }
 
   network    = google_compute_network.vpc.name
   subnetwork = google_compute_subnetwork.subnet.name
@@ -83,7 +90,8 @@ resource "google_container_node_pool" "primary_nodes" {
 
   node_config {
     machine_type = "e2-medium"
-    disk_size_gb = 50
+    disk_size_gb = 30
+    disk_type    = "pd-standard"
 
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
