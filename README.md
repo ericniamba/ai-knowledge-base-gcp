@@ -53,5 +53,3 @@ kubectl apply -f kubernetes/frontend-deployment.yaml
 Eric Niamba — Cloud Engineer
 GitHub: https://github.com/ericniamba
 Live App: http://34.55.52.205
-# CI/CD Pipeline Active
-# Fix CI/CD permissions
