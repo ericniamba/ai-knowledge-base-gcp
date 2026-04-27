@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: us-central1-docker.pkg.dev/project-35d5c8cd-c2c7-40ef-9e5/ai-knowledge-base-gcp-repo/backend:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: GCP_PROJECT_ID
+          value: "project-35d5c8cd-c2c7-40ef-9e5"
+        - name: GCP_REGION
+          value: "us-central1"
+        - name: GCS_BUCKET_NAME
+          value: "ai-knowledge-base-gcp-documents"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: backend
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+  type: ClusterIP

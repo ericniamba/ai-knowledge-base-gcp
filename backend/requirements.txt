@@ -7,9 +7,8 @@ sqlalchemy==2.0.25
 asyncpg==0.29.0
 pgvector==0.2.4
 google-cloud-storage==2.14.0
-google-cloud-aiplatform==1.38.1
-langchain==0.1.4
-langchain-google-vertexai==0.0.1
+google-cloud-aiplatform==1.71.1
 pypdf==3.17.4
 python-dotenv==1.0.0
 psycopg2-binary==2.9.9
+vertexai==1.71.1
