@@ -6,6 +6,10 @@ http://34.55.52.205
 
 A production-grade AI-powered knowledge base running live on Google Kubernetes Engine. Upload any document and ask questions using natural language — powered by Google Vertex AI.
 
+
+## Architecture Diagram
+![Architecture](docs/architecture.svg)
+
 ## Tech Stack
 - Frontend: Next.js + TypeScript
 - Backend: FastAPI Python
