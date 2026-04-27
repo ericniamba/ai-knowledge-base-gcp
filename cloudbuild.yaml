@@ -1,0 +1,32 @@
+steps:
+  # Build backend image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/project-35d5c8cd-c2c7-40ef-9e5/ai-knowledge-base-gcp-repo/backend:latest', './backend']
+
+  # Push backend image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-central1-docker.pkg.dev/project-35d5c8cd-c2c7-40ef-9e5/ai-knowledge-base-gcp-repo/backend:latest']
+
+  # Build frontend image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/project-35d5c8cd-c2c7-40ef-9e5/ai-knowledge-base-gcp-repo/frontend:latest', './frontend']
+
+  # Push frontend image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-central1-docker.pkg.dev/project-35d5c8cd-c2c7-40ef-9e5/ai-knowledge-base-gcp-repo/frontend:latest']
+
+  # Deploy to GKE
+  - name: 'gcr.io/cloud-builders/kubectl'
+    args: ['rollout', 'restart', 'deployment/backend']
+    env:
+    - 'CLOUDSDK_COMPUTE_REGION=us-central1'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=ai-knowledge-base-gcp-cluster'
+
+  - name: 'gcr.io/cloud-builders/kubectl'
+    args: ['rollout', 'restart', 'deployment/frontend']
+    env:
+    - 'CLOUDSDK_COMPUTE_REGION=us-central1'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=ai-knowledge-base-gcp-cluster'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
