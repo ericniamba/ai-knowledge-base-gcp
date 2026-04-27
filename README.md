@@ -1,26 +1,55 @@
 # AI Knowledge Base on GCP
-> Built by Eric Niamba — Cloud Engineer
+Built by Eric Niamba — Cloud Engineer
 
-## Overview
-A production-grade AI-powered knowledge base that allows users to upload documents and ask questions using natural language. Built entirely on Google Cloud Platform.
+## Live Demo
+http://34.44.160.24
+
+A production-grade AI-powered knowledge base running live on Google Kubernetes Engine. Upload any document and ask questions using natural language — powered by Google Vertex AI.
 
 ## Tech Stack
-- **Frontend:** Next.js
-- **Backend:** FastAPI (Python)
-- **AI:** Vertex AI (Google)
-- **Database:** Cloud SQL + pgvector
-- **Storage:** Cloud Storage
-- **Container Orchestration:** GKE (Kubernetes)
-- **Infrastructure as Code:** Terraform
-- **CI/CD:** Cloud Build + GitHub
-- **Networking:** VPC, Firewall Rules
-- **Security:** IAM, Secret Manager
+- Frontend: Next.js + TypeScript
+- Backend: FastAPI Python
+- AI: Vertex AI Gemini — Google enterprise AI
+- Database: Cloud SQL + pgvector
+- Storage: Cloud Storage
+- Orchestration: GKE Kubernetes — 3 node cluster
+- Infrastructure: Terraform — all infra as code
+- CI/CD: Cloud Build + GitHub
+- Security: IAM + Secret Manager
+- Networking: VPC + Firewall Rules
 
-## Architecture
-Coming soon — full diagram with all GCP services
+## GCP Services Used
+- Google Kubernetes Engine GKE — 3-node cluster running all services
+- Vertex AI — Google enterprise AI for embeddings and LLM
+- Cloud Storage — Document upload and storage
+- Cloud SQL — Managed PostgreSQL with pgvector extension
+- Artifact Registry — Docker image storage
+- Cloud Build — CI/CD pipeline
+- Secret Manager — Secure API key storage
+- VPC and Firewall — Private networking and security
+- Cloud Monitoring — Observability and alerting
+- IAM — Role-based access control
+
+## Project Structure
+- frontend/ — Next.js application
+- backend/ — FastAPI application with Vertex AI integration
+- terraform/ — All GCP infrastructure as code
+- kubernetes/ — Kubernetes deployment manifests
+- docs/ — Documentation
 
 ## Setup Instructions
-Coming soon
+Prerequisites: Google Cloud account, gcloud CLI, Terraform, kubectl, Docker
+
+Deploy Infrastructure:
+cd terraform
+terraform init
+terraform apply
+
+Deploy Application:
+kubectl apply -f kubernetes/backend-deployment.yaml
+kubectl apply -f kubernetes/frontend-deployment.yaml
 
 ## Author
-Eric Niamba | [GitHub](https://github.com/ericniamba)
+Eric Niamba — Cloud Engineer
+GitHub: https://github.com/ericniamba
+Live App: http://34.44.160.24
