@@ -2,7 +2,7 @@
 Built by Eric Niamba — Cloud Engineer
 
 ## Live Demo
-http://34.44.160.24
+http://34.55.52.205
 
 A production-grade AI-powered knowledge base running live on Google Kubernetes Engine. Upload any document and ask questions using natural language — powered by Google Vertex AI.
 
@@ -52,4 +52,4 @@ kubectl apply -f kubernetes/frontend-deployment.yaml
 ## Author
 Eric Niamba — Cloud Engineer
 GitHub: https://github.com/ericniamba
-Live App: http://34.44.160.24
+Live App: http://34.55.52.205
