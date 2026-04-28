@@ -26,6 +26,10 @@ spec:
           value: "us-central1"
         - name: GCS_BUCKET_NAME
           value: "ai-knowledge-base-gcp-documents"
+        - name: DATABASE_URL
+          value: "postgresql://kb_user:KnowledgeBase2026!@34.41.215.11:5432/knowledge_base"
+        - name: VERTEX_AI_LOCATION
+          value: "us-central1"
 ---
 apiVersion: v1
 kind: Service
