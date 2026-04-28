@@ -10,11 +10,10 @@ async def get_answer(question: str, document_id: str = None) -> str:
             location=settings.VERTEX_AI_LOCATION
         )
 
-        model = GenerativeModel("gemini-1.5-flash")
+        model = GenerativeModel("gemini-1.5-flash-001")
 
         prompt = f"""You are a helpful AI assistant for a knowledge base.
         Answer the following question clearly and concisely.
-        If you don't know the answer, say so clearly.
         
         Question: {question}
         
