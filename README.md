@@ -33,6 +33,8 @@ A production-grade AI-powered knowledge base running live on Google Kubernetes E
 - VPC and Firewall — Private networking and security
 - Cloud Monitoring — Observability and alerting
 - IAM — Role-based access control
+- **Cloud Monitoring** — Uptime checks every minute with email alerts
+
 
 ## Project Structure
 - frontend/ — Next.js application
