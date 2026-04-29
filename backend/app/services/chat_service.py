@@ -1,16 +1,14 @@
 from app.core.config import settings
-import vertexai
-from vertexai.generative_models import GenerativeModel
+from google import genai
 
 async def get_answer(question: str, document_id: str = None) -> str:
-    """Get AI answer for a question using Vertex AI"""
+    """Get AI answer for a question using Gemini"""
     try:
-        vertexai.init(
+        client = genai.Client(
+            vertexai=True,
             project=settings.GCP_PROJECT_ID,
             location=settings.VERTEX_AI_LOCATION
         )
-
-        model = GenerativeModel("gemini-1.5-flash-001")
 
         prompt = f"""You are a helpful AI assistant for a knowledge base.
         Answer the following question clearly and concisely.
@@ -19,7 +17,10 @@ async def get_answer(question: str, document_id: str = None) -> str:
         
         Answer:"""
 
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt
+        )
         return response.text
 
     except Exception as e:
