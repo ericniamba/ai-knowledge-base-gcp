@@ -140,9 +140,11 @@ kubectl get services
 
 - 🏢 Apple + Banking Infrastructure background
 - ☁️ GCP Associate Cloud Engineer (ACE) Certified
-- 🏅 64 Cloud Badges on LinkedIn
-- 🔧 GCP · Kubernetes · Terraform · IAM · VPC · Fintech Infrastructure
-
+- 🏅 216 Google Cloud Badges | 203,872 Experience Points
+- 🔧 GCP · Kubernetes · Terraform · Vertex AI · IAM · VPC · Fintech Infrastructure
 **Connect:**
-- GitHub: [github.com/ericniamba](https://github.com/ericniamba)
+
+- GitHub: github.com/ericniamba
+- Live App: http://34.55.52.205
+ub.com/ericniamba](https://github.com/ericniamba)
 - Live App: [http://34.55.52.205](http://34.55.52.205)
