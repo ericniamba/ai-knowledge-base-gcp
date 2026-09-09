@@ -1,69 +1,44 @@
-# AI Knowledge Base on GCP
-
-![GCP](https://img.shields.io/badge/Google_Cloud-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white)
-![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)
-![Terraform](https://img.shields.io/badge/Terraform-7B42BC?style=for-the-badge&logo=terraform&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)
-![Vertex AI](https://img.shields.io/badge/Vertex_AI-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white)
+# FinGuard AI
 
 **Built by [Eric Niamba](https://github.com/ericniamba) — Cloud Engineer · GCP ACE Certified · Austin, TX**
 
-> A production-grade AI-powered knowledge base running live on Google Cloud.
-> Upload any document. Ask questions in natural language. Get answers powered by Google Vertex AI.
+> AI-powered compliance intelligence for banks. Upload regulatory documents, ask questions in natural language, and get answers backed by a full audit trail, PII protection, and automated regulatory drift detection.
 
-🔴 **[Live Demo → http://34.55.52.205](http://34.55.52.205)**
+**Live Demo → http://34.55.52.205**
 
 ---
 
-## What This Project Demonstrates
+## What Makes This Different
 
-| Skill Area | Implementation |
+Most AI knowledge base projects upload documents and answer questions. FinGuard AI was built for regulated financial institutions, where "the AI answered it" isn't enough — every answer needs to be provable, safe, and auditable.
+
+| Feature | What It Does |
 |---|---|
-| **Infrastructure as Code** | 100% Terraform — VPC, GKE, Cloud SQL, IAM, Storage |
-| **Container Orchestration** | GKE 3-node cluster with Kubernetes manifests |
-| **AI/ML Integration** | Vertex AI Gemini for embeddings + LLM inference |
-| **Security** | IAM least-privilege roles, Secret Manager, VPC firewall rules |
-| **Networking** | Custom VPC, private subnets, firewall rules, external load balancer |
-| **CI/CD** | Cloud Build pipeline triggered on GitHub push |
-| **Observability** | Cloud Monitoring uptime checks every 60 seconds + email alerts |
-| **Data** | Cloud SQL PostgreSQL + pgvector for vector similarity search |
+| **Query Provenance Ledger** | Every query, retrieved context, and answer is logged in a SHA-256 hash-chained audit trail. Any tampering with past records breaks the chain and is immediately detectable. |
+| **Confidence-Gated Escalation** | Low-confidence answers are never guessed — they're automatically flagged for human compliance review instead. |
+| **Regulatory Drift Detector** | Compares document versions over time and flags what changed, with automatic risk scoring (LOW/MEDIUM/HIGH) based on regulatory keyword analysis. |
+| **Cross-Tenant Isolation** | Bank-grade data separation between tenants, tested against adversarial prompt-injection attempts at the database layer. |
+| **Compliance Score Trend Dashboard** | Tracks cumulative regulatory risk over time as documents change, turning point-in-time compliance checks into a real trend. |
+| **PII Redaction Firewall** | Sensitive data (SSNs, card numbers, account numbers, emails) is detected and redacted *before* it ever reaches the LLM — not after. |
 
 ---
 
 ## Architecture
 
-\`\`\`
-User Request
-     │
-     ▼
-External IP (34.55.52.205)
-     │
-     ▼
-GCP Load Balancer
-     │
-     ▼
-┌─────────────────────────────────────────┐
-│  VPC — Private Network                  │
-│                                         │
-│  ┌──────────────┐  ┌──────────────────┐ │
-│  │  GKE Cluster │  │   Cloud SQL      │ │
-│  │  (3 nodes)   │  │   PostgreSQL     │ │
-│  │              │  │   + pgvector     │ │
-│  │  frontend/   │  └──────────────────┘ │
-│  │  backend     │                       │
-│  │  pods        │  ┌──────────────────┐ │
-│  └──────┬───────┘  │  Cloud Storage   │ │
-│         │          │  (documents)     │ │
-│         │          └──────────────────┘ │
-└─────────┼───────────────────────────────┘
-          │
-          ▼
-   Vertex AI (Gemini)
-   [Google-managed, outside VPC]
-\`\`\`
+## Architecture
 
----
+User Request -> GCP Load Balancer -> VPC (GKE Cluster + Cloud SQL + Cloud Storage) -> Vertex AI Gemini
+
+The backend runs as a 3-node GKE cluster inside a private VPC. Cloud SQL (PostgreSQL + pgvector) handles vector similarity search. Vertex AI Gemini sits outside the VPC as a Google-managed service, reached only after PII redaction has already run.
+
+## Compliance Pipeline
+
+1. User submits a question
+2. PII Redaction Firewall scans and redacts sensitive data, logs the redaction event
+3. Relevant document context is retrieved via pgvector
+4. Vertex AI Gemini generates an answer with a self-reported confidence score
+5. Low-confidence answers are flagged for human review instead of returned as-is
+6. Every step is recorded in the hash-chained Query Provenance Ledger
 
 ## Tech Stack
 
@@ -72,80 +47,19 @@ GCP Load Balancer
 | Frontend | Next.js + TypeScript |
 | Backend | FastAPI Python |
 | AI Engine | Vertex AI Gemini |
-| Database | Cloud SQL — PostgreSQL + pgvector |
+| Database | Cloud SQL PostgreSQL + pgvector |
 | Storage | Cloud Storage |
 | Orchestration | GKE 3-node Kubernetes cluster |
 | IaC | Terraform |
 | CI/CD | Cloud Build + GitHub |
-| Security | IAM + Secret Manager |
-| Networking | VPC + Firewall Rules |
-
----
-
-## GCP Services Used
-
-| Service | Purpose |
-|---|---|
-| Google Kubernetes Engine | 3-node cluster running all services |
-| Vertex AI | Embeddings and LLM inference |
-| Cloud SQL | Managed PostgreSQL with pgvector |
-| Cloud Storage | Document upload and storage |
-| Artifact Registry | Docker image storage |
-| Cloud Build | CI/CD pipeline |
-| Secret Manager | Secure API key storage |
-| VPC + Firewall | Private networking and security |
-| Cloud Monitoring | Uptime checks + alerting |
-| IAM | Role-based access control |
-
----
-
-## Project Structure
-
-\`\`\`
-ai-knowledge-base-gcp/
-├── frontend/          # Next.js + TypeScript application
-├── backend/           # FastAPI application with Vertex AI integration
-├── terraform/         # All GCP infrastructure as code
-│   ├── main.tf        # VPC, GKE cluster, Cloud SQL
-│   ├── iam.tf         # Service accounts and IAM bindings
-│   └── networking.tf  # Subnets, firewall rules
-├── kubernetes/        # Kubernetes deployment manifests
-└── docs/              # Architecture documentation
-\`\`\`
-
----
-
-## Deploy It Yourself
-
-\`\`\`bash
-# 1. Provision all GCP infrastructure
-cd terraform
-terraform init
-terraform apply
-
-# 2. Deploy application to GKE
-kubectl apply -f kubernetes/backend-deployment.yaml
-kubectl apply -f kubernetes/frontend-deployment.yaml
-
-# 3. Verify
-kubectl get pods
-kubectl get services
-\`\`\`
-
----
+| Security | IAM + Secret Manager + PII Redaction |
 
 ## About the Author
 
-**Eric Niamba** — Cloud Engineer · Austin, TX
+**Eric Niamba** — Cloud Engineer, Austin, TX
 
-- 🏢 Apple + Banking Infrastructure background
-- ☁️ GCP Associate Cloud Engineer (ACE) Certified
-- 🏅 216 Google Cloud Badges | 203,872 Experience Points
-- 🔧 GCP · Kubernetes · Terraform · Vertex AI · IAM · VPC · Fintech Infrastructure
+- Apple + Banking Infrastructure background
+- GCP Associate Cloud Engineer (ACE) Certified
+- GCP, Kubernetes, Terraform, IAM, VPC, Fintech Infrastructure
 
-**Connect:**
-
-- GitHub: github.com/ericniamba
-- Live App: http://34.55.52.205
-ub.com/ericniamba](https://github.com/ericniamba)
-- Live App: [http://34.55.52.205](http://34.55.52.205)
+Connect: [github.com/ericniamba](https://github.com/ericniamba)
