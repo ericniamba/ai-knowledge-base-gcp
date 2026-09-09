@@ -25,7 +25,7 @@ app.include_router(chat.router, prefix="/api/v1", tags=["chat"])
 @app.get("/")
 async def root():
     return {
-        "message": "AI Knowledge Base API",
+        "message": "FinGuard AI - Compliance Intelligence Platform",
         "version": "1.0.0",
         "status": "running"
     }
