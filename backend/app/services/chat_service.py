@@ -3,14 +3,13 @@ from google import genai
 import sqlalchemy
 import hashlib
 import re
+from app.services.pii_redaction_service import redact_pii
 
 engine = sqlalchemy.create_engine(settings.DATABASE_URL)
 
 def _get_last_hash() -> str:
     with engine.connect() as conn:
-        result = conn.execute(sqlalchemy.text(
-            "SELECT record_hash FROM query_ledger ORDER BY created_at DESC LIMIT 1"
-        ))
+        result = conn.execute(sqlalchemy.text("SELECT record_hash FROM query_ledger ORDER BY created_at DESC LIMIT 1"))
         row = result.fetchone()
         return row[0] if row else "GENESIS"
 
@@ -18,11 +17,9 @@ def _log_to_ledger(question: str, context: str, answer: str, confidence: float =
     prev_hash = _get_last_hash()
     raw = f"{question}|{context}|{answer}|{prev_hash}"
     record_hash = hashlib.sha256(raw.encode()).hexdigest()
+    insert_sql = "INSERT INTO query_ledger (query_text, context_used, answer_text, record_hash, prev_hash, confidence_score, escalated) VALUES (:q, :c, :a, :rh, :ph, :conf, :esc)"
     with engine.connect() as conn:
-        conn.execute(sqlalchemy.text("""
-            INSERT INTO query_ledger (query_text, context_used, answer_text, record_hash, prev_hash, confidence_score, escalated)
-            VALUES (:q, :c, :a, :rh, :ph, :conf, :esc)
-        """), {"q": question, "c": context, "a": answer, "rh": record_hash, "ph": prev_hash, "conf": confidence, "esc": escalated})
+        conn.execute(sqlalchemy.text(insert_sql), {"q": question, "c": context, "a": answer, "rh": record_hash, "ph": prev_hash, "conf": confidence, "esc": escalated})
         conn.commit()
 
 def _extract_confidence(text: str):
@@ -33,11 +30,10 @@ def _extract_confidence(text: str):
 
 async def get_answer(question: str, document_id: str = None) -> str:
     try:
-        client = genai.Client(
-            vertexai=True,
-            project=settings.GCP_PROJECT_ID,
-            location=settings.VERTEX_AI_LOCATION
-        )
+        redaction_result = redact_pii(question)
+        safe_question = redaction_result["redacted"]
+
+        client = genai.Client(vertexai=True, project=settings.GCP_PROJECT_ID, location=settings.VERTEX_AI_LOCATION)
         context = ""
         try:
             with engine.connect() as conn:
@@ -49,9 +45,9 @@ async def get_answer(question: str, document_id: str = None) -> str:
             print(f"Could not fetch context: {str(e)}")
 
         if context:
-            prompt = "You are a compliance-focused AI assistant. You have access to these documents: " + context + "\n\nAnswer the question using ONLY the documents above. If the documents don't contain enough information to answer confidently, say so explicitly.\n\nQuestion: " + question + "\n\nRespond in this exact format:\nANSWER: <your answer>\nCONFIDENCE: <a number from 1-10>"
+            prompt = "You are a compliance-focused AI assistant. You have access to these documents: " + context + "\n\nAnswer the question using ONLY the documents above. If the documents don't contain enough information to answer confidently, say so explicitly.\n\nQuestion: " + safe_question + "\n\nRespond in this exact format:\nANSWER: <your answer>\nCONFIDENCE: <a number from 1-10>"
         else:
-            prompt = "No documents were found for this query.\n\nQuestion: " + question + "\n\nRespond in this exact format:\nANSWER: I don't have relevant documents to answer this question confidently.\nCONFIDENCE: 1"
+            prompt = "No documents were found for this query.\n\nQuestion: " + safe_question + "\n\nRespond in this exact format:\nANSWER: I don't have relevant documents to answer this question confidently.\nCONFIDENCE: 1"
 
         response = client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
         raw_text = response.text
@@ -65,7 +61,10 @@ async def get_answer(question: str, document_id: str = None) -> str:
         else:
             final_answer = answer
 
-        _log_to_ledger(question, context, final_answer, confidence, escalated)
+        if redaction_result["was_redacted"]:
+            final_answer = "[Note: PII detected and redacted in your question: " + ", ".join(redaction_result["pii_detected"]) + "]\n\n" + final_answer
+
+        _log_to_ledger(safe_question, context, final_answer, confidence, escalated)
         return final_answer
     except Exception as e:
         print(f"Error: {str(e)}")
