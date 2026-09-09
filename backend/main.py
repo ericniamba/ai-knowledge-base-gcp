@@ -3,8 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api import documents, chat, health
 
 app = FastAPI(
-    title="AI Knowledge Base API",
-    description="Production-grade AI Knowledge Base built on GCP",
+    title="FinGuard AI",
+    description="AI-powered compliance intelligence for banks: audit trails, PII redaction, drift detection, and tenant isolation",
     version="1.0.0"
 )
 
