@@ -1,10 +1,10 @@
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    GCP_PROJECT_ID: str = "project-35d5c8cd-c2c7-40ef-9e5"
+    GCP_PROJECT_ID: str = "handsonproject-485816"
     GCP_REGION: str = "us-central1"
     GCS_BUCKET_NAME: str = "ai-knowledge-base-gcp-documents"
-    DATABASE_URL: str = "postgresql://kb_user:KnowledgeBase2026!@34.41.215.11:5432/knowledge_base"
+    DATABASE_URL: str
     VERTEX_AI_LOCATION: str = "us-central1"
     EMBEDDING_MODEL: str = "text-embedding-004"
     LLM_MODEL: str = "gemini-1.5-flash"
