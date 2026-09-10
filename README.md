@@ -4,7 +4,7 @@
 
 > AI-powered compliance intelligence for banks. Upload regulatory documents, ask questions in natural language, and get answers backed by a full audit trail, PII protection, and automated regulatory drift detection.
 
-**Live Demo → http://34.55.52.205**
+**Live Demo → https://finguard-ai-283915220530.us-central1.run.app**
 
 ---
 
