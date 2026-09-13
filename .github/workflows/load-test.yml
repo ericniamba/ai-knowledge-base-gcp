@@ -1,0 +1,22 @@
+name: Load Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  load-test:
+    name: k6 load test against live health endpoint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Install k6
+        run: |
+          curl -fsSL https://github.com/grafana/k6/releases/download/v0.54.0/k6-v0.54.0-linux-amd64.tar.gz -o k6.tar.gz
+          tar xzf k6.tar.gz
+          sudo mv k6-v0.54.0-linux-amd64/k6 /usr/local/bin/k6
+
+      - name: Run load test against live FinGuard AI health endpoint
+        run: k6 run backend/loadtest/health_load_test.js

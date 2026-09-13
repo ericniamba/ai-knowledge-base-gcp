@@ -27,3 +27,9 @@ variable "db_password" {
   type        = string
   sensitive   = true
 }
+
+variable "alert_email" {
+  description = "Email address to receive monitoring alerts"
+  type        = string
+  default     = "ericniamba@gmail.com"
+}
