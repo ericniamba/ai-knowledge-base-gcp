@@ -1,7 +1,7 @@
 variable "project_id" {
   description = "GCP Project ID"
   type        = string
-  default     = "project-35d5c8cd-c2c7-40ef-9e5"
+  default     = "handsonproject-485816"
 }
 
 variable "region" {
@@ -17,7 +17,13 @@ variable "zone" {
 }
 
 variable "project_name" {
-  description = "Project Name"
+  description = "Project Name (used as a prefix for all resource names)"
   type        = string
-  default     = "ai-knowledge-base-gcp"
+  default     = "finguard-ai"
+}
+
+variable "db_password" {
+  description = "Password for the Cloud SQL postgres user. Pass via terraform.tfvars or -var, never commit a real value."
+  type        = string
+  sensitive   = true
 }
