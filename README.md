@@ -59,6 +59,6 @@ The backend runs on Cloud Run, connected to a private VPC. Cloud SQL (PostgreSQL
 
 - Apple fraud operations + retail banking background
 - GCP Associate Cloud Engineer (ACE) Certified
-- GCP, Kubernetes, Terraform, IAM, VPC, Fintech Infrastructure
+- GCP, Terraform, IAM, VPC, Cloud Run, Fintech
 
 Connect: [github.com/ericniamba](https://github.com/ericniamba)
