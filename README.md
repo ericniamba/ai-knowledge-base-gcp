@@ -27,9 +27,9 @@ Most AI knowledge base projects upload documents and answer questions. FinGuard 
 
 ## Architecture
 
-User Request -> GCP Load Balancer -> VPC (GKE Cluster + Cloud SQL + Cloud Storage) -> Vertex AI Gemini
+User Request -> Cloud Run (FastAPI) -> Cloud SQL (PostgreSQL + pgvector) -> Vertex AI Gemini
 
-The backend runs as a 3-node GKE cluster inside a private VPC. Cloud SQL (PostgreSQL + pgvector) handles vector similarity search. Vertex AI Gemini sits outside the VPC as a Google-managed service, reached only after PII redaction has already run.
+The backend runs on Cloud Run, connected to a private VPC. Cloud SQL (PostgreSQL + pgvector) handles vector similarity search. Vertex AI Gemini sits outside the VPC as a Google-managed service, reached only after PII redaction has already run.
 
 ## Compliance Pipeline
 
@@ -48,17 +48,16 @@ The backend runs as a 3-node GKE cluster inside a private VPC. Cloud SQL (Postgr
 | Backend | FastAPI Python |
 | AI Engine | Vertex AI Gemini |
 | Database | Cloud SQL PostgreSQL + pgvector |
-| Storage | Cloud Storage |
-| Orchestration | GKE 3-node Kubernetes cluster |
+| Hosting | Cloud Run |
 | IaC | Terraform |
-| CI/CD | Cloud Build + GitHub |
+| CI/CD | GitHub Actions |
 | Security | IAM + Secret Manager + PII Redaction |
 
 ## About the Author
 
 **Eric Niamba** — Cloud Engineer, Austin, TX
 
-- Apple + Banking Infrastructure background
+- Apple fraud operations + retail banking background
 - GCP Associate Cloud Engineer (ACE) Certified
 - GCP, Kubernetes, Terraform, IAM, VPC, Fintech Infrastructure
 
